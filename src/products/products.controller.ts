@@ -4,7 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
-import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptors';
+import { FormatResponseInterceptor } from '../common/interceptors/format-response.interceptors';
 
 @ApiBearerAuth()
 @ApiTags('Products')
