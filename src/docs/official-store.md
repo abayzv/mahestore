@@ -82,6 +82,7 @@ Response Body Success:
     "_id": "64fb3d8d288c1ac42d01990c",
     "name": "MSI Indonesia",
     "picture_url": "http://localhost:5000/media/23okdosa.png",
+    "isFollow": 0,
     "follower": 239403,
     "content": [
       {
@@ -218,6 +219,7 @@ Response Body Success :
     "_id": "64fb38cf4425ae19e369f79b",
     "name": "Logitech Indonesia",
     "picture_url": "http://localhost:5000/media/23okdosa_wr2aa.png",
+    "isFollow": 1,
     "follower": 1,
     "content": []
   }
