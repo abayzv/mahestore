@@ -10,8 +10,11 @@ Request Body :
 {
   "name": "Indomie Goreng Instan 84g",
   "description": "Indomie Goreng Instan 84g",
+  "SKU": "123456",
   "price": 3500,
-  "category": "Makanan",
+  "category_id": 1,
+  "inventory_id": 1,
+  "discount_id": 1,
   "tags": ["indomie", "mie instan", "siap saji"]
 }
 ```
@@ -27,6 +30,8 @@ Response Body Success :
     "description": "Indomie Goreng Instan 84g",
     "price": 3500,
     "category": "Makanan",
+    "quantity": 5,
+    "discount": 5,
     "tags": ["indomie", "mie instan", "siap saji"]
   }
 }
@@ -55,13 +60,17 @@ Response Body Success :
       "_id": "64fb3ab1362994662a9504ae",
       "name": "Indomie Kuah Kari Ayam 74g",
       "price": 3000,
-      "category": "Makanan"
+      "category": "Makanan",
+      "quantity": 2,
+      "discount": 5
     },
     {
       "_id": "64fb3d8d288c1ac42d01990c",
       "name": "Indomie Rendang 80g",
       "price": 3500,
-      "category": "Makanan"
+      "category": "Makanan",
+      "quantity": 1,
+      "discount": null
     }
   ]
 }
@@ -86,7 +95,10 @@ Response Body Success:
     "description": "Indomie Mie Instan rasa Kari ayam",
     "price": 3000,
     "category": "Makanan",
-    "tags": ["mie", "indomie"]
+    "price": 3500,
+    "quantity": 1,
+    "tags": ["mie", "indomie"],
+    "official_store": null
   }
 }
 ```
@@ -115,7 +127,6 @@ Request Body :
   "name": "Indomie Rebus Kari Ayam 74g",
   "description": "Indomie Rebus Kari Ayam Instan 74g",
   "price": 3000,
-  "category": "Makanan",
   "tags": ["indomie", "mie instan", "siap saji"],
   "store_id": "64fb3d8d288c1ac42d01990c"
 }
@@ -132,6 +143,8 @@ Response Body Success :
     "description": "Indomie Rebus Kari Ayam Instan 74g",
     "price": 3000,
     "category": "Makanan",
+    "quantity": 2,
+    "discount": 5,
     "tags": ["indomie", "mie instan", "siap saji"],
     "official_store": {
       "name": "Logitech Indonesia",
@@ -164,5 +177,37 @@ Response Body Success :
 {
   "status": "success",
   "data": {}
+}
+```
+
+## Get Official Store Products
+
+Endpoint : GET /api/products/official-store/:id
+
+```input
+id : 64fb38cf4425ae19e369f79b
+```
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "_id": "64fb3ab1362994662a9504ae",
+      "name": "Indomie Kuah Kari Ayam 74g",
+      "price": 3000,
+      "category": "Makanan",
+      "quantity": 2,
+      "discount": 5
+    },
+    {
+      "_id": "64fb3d8d288c1ac42d01990c",
+      "name": "Indomie Rendang 80g",
+      "price": 3500,
+      "category": "Makanan",
+      "quantity": 1,
+      "discount": null
+    }
+  ]
 }
 ```
