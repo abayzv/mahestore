@@ -6,6 +6,7 @@ import { ProductSchema } from '../../schemas/product.schema';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
 
+
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -16,8 +17,7 @@ import { ConfigService } from '@nestjs/config/dist';
         dbName: config.get<string>('MONGODB_DB_NAME'),
       }),
     }),
-    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
-  ],
+    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }])],
   controllers: [ProductsController],
   providers: [ProductsService],
 })

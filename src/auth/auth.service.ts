@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios/dist';
 import { catchError, firstValueFrom } from 'rxjs';
-import { ResponseError } from 'src/common/error/error-exception';
+import { ResponseError } from '../common/error/error-exception';
 
 @Injectable()
 export class AuthService {

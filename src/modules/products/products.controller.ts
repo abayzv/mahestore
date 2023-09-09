@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { FormatResponseInterceptor } from '../../common/interceptors/format-response.interceptors';
 import { PRODUCT_SINGLE, PRODUCT_LIST } from './entities/product.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../../auth/auth.guard';
 
 @ApiBearerAuth()
 @ApiTags('Products')

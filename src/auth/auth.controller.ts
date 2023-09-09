@@ -5,7 +5,7 @@ import { AuthGuard } from './auth.guard';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { Request } from 'express';
 import { UseInterceptors } from '@nestjs/common';
-import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptors';
+import { FormatResponseInterceptor } from '../common/interceptors/format-response.interceptors';
 
 @ApiTags('Auth')
 @UseInterceptors(FormatResponseInterceptor)
