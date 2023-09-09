@@ -4,8 +4,7 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { Connection, connect, Model } from "mongoose";
-import { Product, ProductSchema } from '../schemas/product.schema';
-import { ProductEntity } from './entities/product.entity';
+import { Product, ProductSchema } from '../../schemas/product.schema';
 
 describe('ProductController', () => {
   let productsService: ProductsService;

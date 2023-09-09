@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Model } from 'mongoose';
-import { IProduct } from '../interfaces/product.interface';
-import { ResponseError } from '../common/error/error-exception';
+import { IProduct } from '../../interfaces/product.interface';
+import { ResponseError } from '../../common/error/error-exception';
 import { ProductEntity } from './entities/product.entity';
 
 @Injectable()
