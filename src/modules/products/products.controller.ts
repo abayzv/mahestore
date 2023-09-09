@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -6,10 +6,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { FormatResponseInterceptor } from '../../common/interceptors/format-response.interceptors';
 import { PRODUCT_SINGLE, PRODUCT_LIST } from './entities/product.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiBearerAuth()
 @ApiTags('Products')
 @UseInterceptors(FormatResponseInterceptor, ClassSerializerInterceptor)
+@UseGuards(AuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
