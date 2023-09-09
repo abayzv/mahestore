@@ -34,19 +34,21 @@ export class ProductsService {
     return new ProductEntity(product);
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto): Promise<IProduct> {
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductEntity> {
 
     const existingProduct = await this.productModel.findByIdAndUpdate(
       id,
       updateProductDto,
-    )
+    ).lean();
 
-    return existingProduct;
+    return new ProductEntity(existingProduct);
 
   }
 
-  remove(id: string) {
-    return this.productModel.findByIdAndRemove(id);
+  async remove(id: string): Promise<ProductEntity> {
+    const product: ProductEntity = await this.productModel.findByIdAndDelete(id).lean();
+
+    return new ProductEntity(product);
   }
 }
 

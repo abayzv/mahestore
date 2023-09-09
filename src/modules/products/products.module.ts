@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config/dist';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         uri: config.get<string>('MONGODB_URI'),
+        dbName: config.get<string>('MONGODB_DB_NAME'),
       }),
     }),
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }])],
