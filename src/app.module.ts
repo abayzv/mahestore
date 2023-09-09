@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ProductsModule } from './modules/products/products.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ProductsModule, ConfigModule.forRoot({ isGlobal: true })],
+  imports: [ProductsModule, ConfigModule.forRoot({ isGlobal: true }), AuthModule, JwtModule.register({
+    global: true,
+  }),],
 })
 export class AppModule { }
