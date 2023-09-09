@@ -52,25 +52,16 @@ Response Body Success :
   "status": "success",
   "data": [
     {
-      "_id": "64fb38cf4425ae19e369f79b",
-      "name": "Indomie Goreng 80g",
-      "price": 3500,
-      "category": "Makanan",
-      "tags": ["indomie", "mie", "makanan"]
-    },
-    {
       "_id": "64fb3ab1362994662a9504ae",
       "name": "Indomie Kuah Kari Ayam 74g",
       "price": 3000,
-      "category": "Makanan",
-      "tags": ["mie", "indomie"]
+      "category": "Makanan"
     },
     {
       "_id": "64fb3d8d288c1ac42d01990c",
       "name": "Indomie Rendang 80g",
       "price": 3500,
-      "category": "Makanan",
-      "tags": ["mie", "indomie"]
+      "category": "Makanan"
     }
   ]
 }
@@ -81,7 +72,7 @@ Response Body Success :
 Endpoint : GET /api/products/:id
 
 ```input
-id : 64fb38cf4425ae19e369f79b
+id : 64fb3ab1362994662a9504ae
 ```
 
 Response Body Success:
@@ -90,11 +81,12 @@ Response Body Success:
 {
   "status": "success",
   "data": {
-    "_id": "64fb38cf4425ae19e369f79b",
-    "name": "Indomie Goreng 80g",
-    "price": 3500,
+    "_id": "64fb3ab1362994662a9504ae",
+    "name": "Indomie Kuah Kari Ayam 74g",
+    "description": "Indomie Mie Instan rasa Kari ayam",
+    "price": 3000,
     "category": "Makanan",
-    "tags": ["indomie", "mie", "makanan"]
+    "tags": ["mie", "indomie"]
   }
 }
 ```
@@ -124,7 +116,8 @@ Request Body :
   "description": "Indomie Rebus Kari Ayam Instan 74g",
   "price": 3000,
   "category": "Makanan",
-  "tags": ["indomie", "mie instan", "siap saji"]
+  "tags": ["indomie", "mie instan", "siap saji"],
+  "store_id": "64fb3d8d288c1ac42d01990c"
 }
 ```
 
@@ -139,7 +132,11 @@ Response Body Success :
     "description": "Indomie Rebus Kari Ayam Instan 74g",
     "price": 3000,
     "category": "Makanan",
-    "tags": ["indomie", "mie instan", "siap saji"]
+    "tags": ["indomie", "mie instan", "siap saji"],
+    "official_store": {
+      "name": "Logitech Indonesia",
+      "picture_url": "http://localhost:5000/media/23okdosa.png"
+    }
   }
 }
 ```
