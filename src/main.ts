@@ -9,12 +9,21 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api/v1');
 
-  // Proxy
+  // Auth Service
   app.use('/auth-service', createProxyMiddleware({
     target: process.env.AUTH_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
       '^/auth-service': '',
+    },
+  }));
+
+  // Media Service
+  app.use('/media-service', createProxyMiddleware({
+    target: process.env.MEDIA_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/media-service': '',
     },
   }));
 
