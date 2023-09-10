@@ -1,11 +1,13 @@
-import { Controller, Get, Req, UseInterceptors, Post, UploadedFile } from '@nestjs/common';
+import { Controller, UseGuards, Get, Req, UseInterceptors, Post, UploadedFile } from '@nestjs/common';
 import { MediasService } from './medias.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { FormatResponseInterceptor } from '../../common/interceptors/format-response.interceptors';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('Medias')
 @UseInterceptors(FormatResponseInterceptor)
 @Controller('medias')

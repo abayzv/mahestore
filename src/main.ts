@@ -25,6 +25,13 @@ async function bootstrap() {
     pathRewrite: {
       '^/media-service': '',
     },
+    router: function (req: any) {
+      console.log(req.url);
+      if (req.url.includes('assets')) {
+        // change target
+        return process.env.MEDIA_SERVICE_URL.replace('/api/v1', '')
+      }
+    }
   }));
 
   const config = new DocumentBuilder()
