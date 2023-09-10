@@ -12,7 +12,7 @@ async function bootstrap() {
     .setTitle('Mahestore API')
     .setDescription('The Mahestore API description')
     .setVersion('1.0')
-    .addTag('Products', "Auth")
+    .addTag('Auth', 'Products')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
