@@ -11,27 +11,11 @@ async function bootstrap() {
 
   // Auth Service
   app.use('/auth-service', createProxyMiddleware({
-    target: process.env.AUTH_SERVICE_URL,
+    target: process.env.AUTH_SERVICE_URL + ':' + process.env.AUTH_SERVICE_PORT,
     changeOrigin: true,
     pathRewrite: {
       '^/auth-service': '',
     },
-  }));
-
-  // Media Service
-  app.use('/media-service', createProxyMiddleware({
-    target: process.env.MEDIA_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/media-service': '',
-    },
-    router: function (req: any) {
-      console.log(req.url);
-      if (req.url.includes('assets')) {
-        // change target
-        return process.env.MEDIA_SERVICE_URL.replace('/api/v1', '')
-      }
-    }
   }));
 
   const config = new DocumentBuilder()
@@ -44,6 +28,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(5000);
+  await app.listen(process.env.APP_PORT);
 }
 bootstrap();

@@ -10,8 +10,7 @@ import { MediasModule } from './modules/medias/medias.module';
     ProductsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    JwtModule.register({ global: true }),
-    MediasModule
+    JwtModule.register({ global: true })
   ],
 })
 export class AppModule { }

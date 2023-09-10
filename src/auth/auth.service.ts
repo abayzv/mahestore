@@ -73,7 +73,7 @@ export class AuthService {
                 data,
             }).pipe(
                 catchError((error: any) => {
-                    throw new ResponseError(error.response.status, error.response.data.message);
+                    throw new Error(error.message)
                 })
             )
         )
@@ -93,7 +93,7 @@ export class AuthService {
                 }
             }).pipe(
                 catchError((error: any) => {
-                    throw new ResponseError(error.response.status, error.response.data.message);
+                    throw new Error(error.message)
                 })
             )
         )
