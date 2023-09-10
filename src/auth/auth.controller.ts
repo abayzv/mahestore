@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AuthLoginDto } from './dto/auth-login.dto';
+import { RefreshTokennDto } from './dto/refresh-token.dto';
+import { RevokeTokennDto } from './dto/revokte-token.dto';
 import { Request } from 'express';
 import { UseInterceptors } from '@nestjs/common';
 import { FormatResponseInterceptor } from '../common/interceptors/format-response.interceptors';
@@ -24,5 +26,21 @@ export class AuthController {
   async me(@Req() req: Request) {
     const token = req.headers.authorization?.split(' ')[1];
     return this.authService.me(token);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post('/refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokennDto, @Req() req: Request) {
+    const token = req.headers.authorization?.split(' ')[1];
+    return this.authService.refreshToken(token, refreshTokenDto.refreshToken);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post('/revoke-token')
+  async revokeToken(@Body() revokeTokenDto: RevokeTokennDto, @Req() req: Request) {
+    const token = req.headers.authorization?.split(' ')[1];
+    return this.authService.revokeToken(token, revokeTokenDto.userId);
   }
 }

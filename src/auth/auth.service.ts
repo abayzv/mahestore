@@ -34,6 +34,37 @@ export class AuthService {
         return data
     }
 
+    proxy(req: any) {
+        const url = this.baseUrl + req.url;
+        const method = req.method;
+        const data = req.body;
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if (token) {
+            return this.useApiAuth(url, method, data, token)
+        } else {
+            return this.useApi(url, method, data)
+        }
+    }
+
+    async refreshToken(token: string, refreshToken: string) {
+        const url = this.baseUrl + '/auth/refreshToken';
+        const data = await this.useApiAuth(url, 'POST', {
+            refreshToken
+        }, token)
+
+        return data
+    }
+
+    async revokeToken(token: string, userId: string) {
+        const url = this.baseUrl + '/auth/revokeRefreshToken';
+        const data = await this.useApiAuth(url, 'POST', {
+            userId
+        }, token)
+
+        return data
+    }
+
     private async useApi(url: string, method: string, data: any) {
         const { data: response } = await firstValueFrom(
             this.httpService.request({
