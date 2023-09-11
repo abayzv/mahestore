@@ -4,13 +4,15 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { MediasModule } from './modules/medias/medias.module';
+import { WhatsappsModule } from './whatsapps/whatsapps.module';
 
 @Module({
   imports: [
     ProductsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    JwtModule.register({ global: true })
+    JwtModule.register({ global: true }),
+    WhatsappsModule
   ],
 })
 export class AppModule { }
