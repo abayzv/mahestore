@@ -5,15 +5,15 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt'
 import { ResponseError } from '../common/error/error-exception';
+import { WhatsappsService } from 'src/modules/whatsapps/whatsapps.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly authService: AuthService,
+        private readonly whatsappService: WhatsappsService
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized');
         }
 
-        const payload = this.jwtService.decode(token);
+        const payload = this.jwtService.decode(token)
         request['user'] = payload;
 
         return true;

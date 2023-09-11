@@ -4,7 +4,7 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { Connection, connect, Model } from "mongoose";
-import { Product, ProductSchema } from '../../schemas/product.schema';
+import { Product, ProductSchema } from './schema/product.schema';
 import { JwtModule } from '@nestjs/jwt'
 import { AuthService } from '../../auth/auth.service';
 

@@ -28,8 +28,6 @@ export class MediasService {
         body.append('media', file.buffer, file.originalname);
         body.append('author', userId);
 
-        console.log(body)
-
         const data = this.useApiAuth(url, 'POST', body, token)
 
         return data

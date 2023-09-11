@@ -18,6 +18,15 @@ async function bootstrap() {
     },
   }));
 
+  // Whatsapp Service
+  app.use('/whatsapp-service', createProxyMiddleware({
+    target: process.env.WHATSAPP_SERVICE_URL + ':' + process.env.WHATSAPP_SERVICE_PORT,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/whatsapp-service': '',
+    },
+  }));
+
   const config = new DocumentBuilder()
     .setTitle('Mahestore API')
     .setDescription('The Mahestore API description')
