@@ -3,10 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios/dist';
 import { catchError, firstValueFrom } from 'rxjs';
 import { ResponseError } from '../common/error/error-exception';
+import { AxiosError } from 'axios';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-    baseUrl: string = this.configService.get<string>('AUTH_SERVICE_URL');
+    url: string = this.configService.get<string>('AUTH_SERVICE_URL');
+    port = this.configService.get<string>('AUTH_SERVICE_PORT');
+    baseUrl: string = `${this.url}:${this.port}/api/v1`
 
     constructor(
         private readonly httpService: HttpService,
@@ -14,17 +18,37 @@ export class AuthService {
     ) { }
 
     async login(email: string, password: string) {
-        const url = this.baseUrl + '/auth/login';
+        const url = this.baseUrl + '/auth/email/login';
         const data = await this.useApi(url, 'POST', { email, password })
+
+        return {
+            accessToken: data.token,
+            refreshToken: data.refreshToken,
+        }
+    }
+
+    async register(registerDto: RegisterDto) {
+        const url = this.baseUrl + '/auth/email/register';
+        const data = await this.useApi(url, 'POST', registerDto)
 
         return data
     }
 
     async me(token: string) {
-        const url = this.baseUrl + '/users/me';
+        const url = this.baseUrl + '/auth/me';
+        console.log(url)
+        console.log(token)
         const data = await this.useApiAuth(url, 'GET', {}, token)
 
-        return data.data
+        return {
+            id: data.id,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            roleId: data.role.id,
+            roleName: data.role.name,
+            status: data.status.name,
+        }
     }
 
     async verify(token: string, action: string, path: string) {
@@ -72,14 +96,16 @@ export class AuthService {
                 method,
                 data,
             }).pipe(
-                catchError((error: any) => {
+                catchError((error) => {
+                    if (error.response.status === 422) {
+                        throw new ResponseError(error.response.data.status, error.message)
+                    }
+
                     throw new Error(error.message)
                 })
             )
         )
-
         return response
-
     }
 
     private async useApiAuth(url: string, method: string, data: any, token: string) {
@@ -92,7 +118,11 @@ export class AuthService {
                     Authorization: `Bearer ${token}`
                 }
             }).pipe(
-                catchError((error: any) => {
+                catchError((error) => {
+                    if (error.response.status === 422) {
+                        throw new ResponseError(error.response.data.status, error.message)
+                    }
+
                     throw new Error(error.message)
                 })
             )

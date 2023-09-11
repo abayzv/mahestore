@@ -23,18 +23,10 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized');
         }
 
-        // console.log(request.method, request.originalUrl)
-        const response = await this.authService.verify(token, request.method, request.originalUrl);
-        const { isPermited } = response.data
+        const payload = this.jwtService.decode(token);
+        request['user'] = payload;
 
-        if (!isPermited) {
-            throw new ResponseError(403, 'Forbidden')
-        } else {
-            const payload = this.jwtService.decode(token);
-            request['user'] = payload;
-
-            return true;
-        }
+        return true;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {

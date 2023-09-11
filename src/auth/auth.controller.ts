@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AuthLoginDto } from './dto/auth-login.dto';
+import { RegisterDto } from './dto/register.dto';
 import { RefreshTokennDto } from './dto/refresh-token.dto';
 import { RevokeTokennDto } from './dto/revokte-token.dto';
 import { Request } from 'express';
@@ -14,6 +15,11 @@ import { FormatResponseInterceptor } from '../common/interceptors/format-respons
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
+
+  @Post('/register')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto)
+  }
 
   @Post('/login')
   async login(@Body() authLoginDto: AuthLoginDto) {
