@@ -55,12 +55,20 @@ export class WhatsappsService {
     ) { }
 
     verifyOtp = async (userId: number, verifyCode: number, verifyToken: string) => {
-        const data = await this.whatsappModel.find({
+        const data = await this.whatsappModel.findOne({
             verify_code: verifyCode,
             verify_token: verifyToken
         });
 
-        if (data.length > 0) {
+        // check is expired
+        const now = Date.now()
+        const expired = data.expires_in
+
+        if (now > expired) {
+            throw new ResponseError(400, `Your verification code is expired, please send otp again`);
+        }
+
+        if (data) {
             await this.whatsappModel.findOneAndUpdate({
                 verify_code: verifyCode,
                 verify_token: verifyToken
