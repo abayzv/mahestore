@@ -49,11 +49,11 @@ export class AuthController {
     return this.authService.refreshToken(token, refreshTokenDto.refreshToken);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Post('/revoke-token')
-  async revokeToken(@Body() revokeTokenDto: RevokeTokennDto, @Req() req: Request) {
-    const token = req.headers.authorization?.split(' ')[1];
-    return this.authService.revokeToken(token, revokeTokenDto.userId);
-  }
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Post('/revoke-token')
+  // async revokeToken(@Body() revokeTokenDto: RevokeTokennDto, @Req() req: Request) {
+  //   const token = req.headers.authorization?.split(' ')[1];
+  //   return this.authService.revokeToken(token, revokeTokenDto.userId);
+  // }
 }

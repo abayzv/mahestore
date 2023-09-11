@@ -82,10 +82,8 @@ export class AuthService {
     }
 
     async refreshToken(token: string, refreshToken: string) {
-        const url = this.baseUrl + '/auth/refreshToken';
-        const data = await this.useApiAuth(url, 'POST', {
-            refreshToken
-        }, token)
+        const url = this.baseUrl + '/auth/refresh';
+        const data = await this.useApiAuth(url, 'POST', {}, refreshToken)
 
         return data
     }
