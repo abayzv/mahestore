@@ -11,32 +11,8 @@ import { IWhatsapp, VerifyWhatsapp } from 'src/modules/whatsapps/interface/whats
 @Injectable()
 export class AuthService {
     url: string = this.configService.get<string>('AUTH_SERVICE_URL');
-    port = this.configService.get<string>('AUTH_SERVICE_PORT');
+    port: string = this.configService.get<string>('AUTH_SERVICE_PORT');
     baseUrl: string = `${this.url}:${this.port}/api/v1`
-
-    // generate 6 random number
-    generateVerificationCode(): number {
-        return Math.floor(100000 + Math.random() * 900000);
-    }
-
-    generateRandomToken(length: number) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let token = '';
-
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            token += characters.charAt(randomIndex);
-        }
-
-        return token;
-    }
-
-    expiresIn(duration: number) {
-        // duration in minutes
-        const date = new Date();
-        date.setMinutes(date.getMinutes() + duration);
-        return date.getTime();
-    }
 
     constructor(
         private readonly httpService: HttpService,
@@ -48,19 +24,9 @@ export class AuthService {
         const url = this.baseUrl + '/auth/email/login';
         const data = await this.useApi(url, 'POST', { email, password })
 
-        const verifyToken = this.generateRandomToken(64)
-        const verify: VerifyWhatsapp = {
-            verify_code: this.generateVerificationCode(),
-            verify_token: verifyToken,
-            expires_in: this.expiresIn(60)
-        }
-
-        await this.whatsappService.sendOtp(data.id, verify)
-
         return {
             accessToken: data.token,
             refreshToken: data.refreshToken,
-            verifyToken: verifyToken
         }
     }
 
@@ -79,8 +45,6 @@ export class AuthService {
         const loginUrl = this.baseUrl + '/auth/email/login';
         const data = await this.useApi(url, 'POST', registerDto)
 
-        const verifyToken = this.generateRandomToken(64)
-
         const loginData = await this.useApi(loginUrl, 'POST', {
             email: registerDto.email,
             password: registerDto.password
@@ -89,19 +53,13 @@ export class AuthService {
         const createWhatsapp = {
             userId: loginData.user.id,
             phoneNumber: registerDto.phoneNumber,
-            verify_code: this.generateVerificationCode(),
-            isActivated: false,
-            verify_token: verifyToken,
-            expires_in: this.expiresIn(60)
         }
 
         await this.whatsappService.create(createWhatsapp)
 
-        data.verifyToken = verifyToken
         return {
             accessToken: loginData.token,
             refreshToken: loginData.refreshToken,
-            verifyToken: verifyToken
         }
     }
 

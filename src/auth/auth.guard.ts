@@ -26,6 +26,17 @@ export class AuthGuard implements CanActivate {
         const payload = this.jwtService.decode(token)
         request['user'] = payload;
 
+        // check if user is active from whatsapp service
+        // if request url start with auth and whatsapp skip this check
+        if (request.url.startsWith('/api/v1/auth') || request.url.startsWith('/api/v1/whatsapps')) {
+            return true;
+        }
+
+        const isActive = await this.whatsappService.isActive(payload['id']);
+        if (!isActive) {
+            throw new ResponseError(401, 'Unauthorized');
+        }
+
         return true;
     }
 

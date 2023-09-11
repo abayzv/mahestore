@@ -4,6 +4,7 @@ import { WhatsappsController } from './whatsapps.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WhatsappSchema } from './schema/whatsapp.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Global()
 @Module({
@@ -16,7 +17,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         dbName: config.get<string>('MONGODB_DB_NAME'),
       }),
     }),
-    MongooseModule.forFeature([{ name: 'Whatsapp', schema: WhatsappSchema }])
+    MongooseModule.forFeature([{ name: 'Whatsapp', schema: WhatsappSchema }]),
+    ConfigModule,
+    HttpModule
   ],
   controllers: [WhatsappsController],
   exports: [WhatsappsService],
