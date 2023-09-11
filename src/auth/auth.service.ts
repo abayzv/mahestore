@@ -27,6 +27,16 @@ export class AuthService {
         }
     }
 
+    async adminLogin(email: string, password: string) {
+        const url = this.baseUrl + '/auth/admin/email/login';
+        const data = await this.useApi(url, 'POST', { email, password })
+
+        return {
+            accessToken: data.token,
+            refreshToken: data.refreshToken,
+        }
+    }
+
     async register(registerDto: RegisterDto) {
         const url = this.baseUrl + '/auth/email/register';
         const data = await this.useApi(url, 'POST', registerDto)

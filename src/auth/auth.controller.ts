@@ -9,6 +9,8 @@ import { RevokeTokennDto } from './dto/revokte-token.dto';
 import { Request } from 'express';
 import { UseInterceptors } from '@nestjs/common';
 import { FormatResponseInterceptor } from '../common/interceptors/format-response.interceptors';
+import { RoleGuard } from './role/role.guard';
+import { Roles } from './roles/roles.decorator';
 
 @ApiTags('Auth')
 @UseInterceptors(FormatResponseInterceptor)
@@ -24,6 +26,11 @@ export class AuthController {
   @Post('/login')
   async login(@Body() authLoginDto: AuthLoginDto) {
     return this.authService.login(authLoginDto.email, authLoginDto.password);
+  }
+
+  @Post('/admin/login')
+  async adminLogin(@Body() authLoginDto: AuthLoginDto) {
+    return this.authService.adminLogin(authLoginDto.email, authLoginDto.password);
   }
 
   @ApiBearerAuth()
