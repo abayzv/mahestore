@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import { RegisterDto } from './dto/register.dto';
 import { WhatsappsService } from 'src/modules/whatsapps/whatsapps.service';
 import { IWhatsapp, VerifyWhatsapp } from 'src/modules/whatsapps/interface/whatsapp.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -14,10 +15,16 @@ export class AuthService {
     port: string = this.configService.get<string>('AUTH_SERVICE_PORT');
     baseUrl: string = `${this.url}:${this.port}/api/v1`
 
+    async createJwtToken(id: number, email: string) {
+        const payload = { id, email }
+        return await this.jwtService.signAsync(payload)
+    }
+
     constructor(
         private readonly httpService: HttpService,
         private readonly configService: ConfigService,
-        private readonly whatsappService: WhatsappsService
+        private readonly whatsappService: WhatsappsService,
+        private readonly jwtService: JwtService,
     ) { }
 
     async login(email: string, password: string) {
@@ -27,8 +34,8 @@ export class AuthService {
         await this.whatsappService.revokeAccess(data.user.id)
 
         return {
-            accessToken: data.token,
-            refreshToken: data.refreshToken,
+            accessToken: await this.createJwtToken(data.user.id, data.user.email),
+            // refreshToken: data.refreshToken,
         }
     }
 
@@ -37,8 +44,8 @@ export class AuthService {
         const data = await this.useApi(url, 'POST', { email, password })
 
         return {
-            accessToken: data.token,
-            refreshToken: data.refreshToken,
+            accessToken: await this.createJwtToken(data.user.id, data.user.email),
+            // refreshToken: data.refreshToken,
         }
     }
 
@@ -60,8 +67,8 @@ export class AuthService {
         await this.whatsappService.create(createWhatsapp)
 
         return {
-            accessToken: loginData.token,
-            refreshToken: loginData.refreshToken,
+            accessToken: await this.createJwtToken(loginData.user.id, loginData.user.email),
+            // refreshToken: loginData.refreshToken,
         }
     }
 

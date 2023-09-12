@@ -13,7 +13,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
     ProductsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    JwtModule.register({ global: true, secret: process.env.JWT_SECRET }),
+    JwtModule.register({ global: true, secret: process.env.JWT_SECRET, signOptions: { expiresIn: process.env.JWT_EXPIRES_IN } }),
     WhatsappsModule,
     MidtransModule,
     OrdersModule,
