@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { CreateMidtranDto } from './dto/create-midtran.dto';
-import { UpdateMidtranDto } from './dto/update-midtran.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { FindOneEvent } from './midtrans.events';
+import { CreateTransaction } from './midtrans.interface';
+import { Request } from 'express';
 
 @Injectable()
 export class MidtransService {
@@ -10,24 +10,25 @@ export class MidtransService {
     @Inject('MIDTRANS_SERVICE') private client: ClientProxy,
   ) { }
 
-  create(createMidtranDto: CreateMidtranDto) {
-    return 'This action adds a new midtran';
-  }
+  async create(createMidtranDto: CreateMidtranDto, req: Request) {
+    const user = req['user'].user;
 
-  findAll() {
-    return `This action returns all midtrans`;
+    const data: CreateTransaction = {
+      transaction_details: {
+        order_id: createMidtranDto.order_id,
+        gross_amount: createMidtranDto.gross_amount,
+      },
+      customer_details: {
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email,
+      }
+    }
+
+    return this.client.send('create_transaction', data);
   }
 
   findOne(id: string) {
-    this.client.emit('hello', new FindOneEvent(1));
-    return `This action returns a #${id} midtran`;
-  }
-
-  update(id: number, updateMidtranDto: UpdateMidtranDto) {
-    return `This action updates a #${id} midtran`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} midtran`;
+    return this.client.send('get_status_transaction', id);
   }
 }
