@@ -19,6 +19,8 @@ export class MidtransController {
     return this.midtransService.create(createMidtranDto, req);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.midtransService.findOne(id);
