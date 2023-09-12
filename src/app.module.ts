@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { MediasModule } from './modules/medias/medias.module';
 import { WhatsappsModule } from './modules/whatsapps/whatsapps.module';
 import { MidtransModule } from './modules/midtrans/midtrans.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { AddressesModule } from './modules/addresses/addresses.module';
 @Module({
   imports: [
     ProductsModule,
@@ -14,6 +16,8 @@ import { MidtransModule } from './modules/midtrans/midtrans.module';
     JwtModule.register({ global: true, secret: process.env.JWT_SECRET }),
     WhatsappsModule,
     MidtransModule,
+    OrdersModule,
+    AddressesModule,
   ],
 })
 export class AppModule { }
