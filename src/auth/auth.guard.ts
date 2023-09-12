@@ -25,12 +25,23 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized');
         }
 
+        // verify token
+        try {
+            this.jwtService.verify(token);
+        } catch (error) {
+            throw new UnauthorizedException('Unauthorized');
+        }
+
         const payload = this.jwtService.decode(token)
         request['user'] = payload;
 
-        // check if user is active from whatsapp service
-        // if request url start with auth and whatsapp skip this check
-        if (request.url.startsWith('/api/v1/auth') || request.url.startsWith('/api/v1/whatsapps')) {
+        const skipCheck = [
+            '/api/v1/auth/me',
+            '/api/v1/auth/refresh',
+            '/api/v1/auth/whatsapp/verify',
+            '/api/v1/auth/whatsapp/send-otp',
+        ]
+        if (skipCheck.includes(request.url)) {
             return true;
         }
 
@@ -38,7 +49,6 @@ export class AuthGuard implements CanActivate {
         if (!isActive) {
             throw new ResponseError(401, 'Unauthorized');
         }
-        console.log('is active', isActive)
 
 
         try {
