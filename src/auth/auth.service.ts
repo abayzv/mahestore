@@ -24,6 +24,8 @@ export class AuthService {
         const url = this.baseUrl + '/auth/email/login';
         const data = await this.useApi(url, 'POST', { email, password })
 
+        await this.whatsappService.revokeAccess(data.user.id)
+
         return {
             accessToken: data.token,
             refreshToken: data.refreshToken,

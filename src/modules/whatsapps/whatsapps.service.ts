@@ -90,6 +90,11 @@ export class WhatsappsService {
         return whatsapp.isActivated;
     }
 
+    revokeAccess = async (userId: string) => {
+        const whatsapp = await this.whatsappModel.findOne({ userId: userId }).lean();
+        await this.whatsappModel.findOneAndUpdate({ userId: userId }, { isActivated: false }).lean();
+    }
+
     async create(createUserWhatsapp: CreateUserWhatsapp): Promise<CreateUserWhatsapp> {
         const whatsapp = await this.whatsappModel.create(createUserWhatsapp);
         return whatsapp;

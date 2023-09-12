@@ -38,8 +38,8 @@ export class AuthGuard implements CanActivate {
         const skipCheck = [
             '/api/v1/auth/me',
             '/api/v1/auth/refresh',
-            '/api/v1/auth/whatsapp/verify',
-            '/api/v1/auth/whatsapp/send-otp',
+            '/api/v1/whatsapps/verify',
+            '/api/v1/whatsapps/send-otp',
         ]
         if (skipCheck.includes(request.url)) {
             return true;
