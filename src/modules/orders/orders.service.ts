@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { Request } from 'express';
 import { Types } from 'mongoose';
 import { OrderItemEntity } from './entities/orderItem.entity';
+import { ResponseError } from 'src/common/error/error-exception';
 
 @Injectable()
 export class OrdersService {
@@ -37,7 +38,7 @@ export class OrdersService {
       return orderItem._id;
     });
 
-    const data = new this.Order({
+    const data = await this.Order.create({
       reference_number: 'MHS-' + Math.floor(Math.random() * 1000) + "-" + Date.now(),
       customer_id: userId,
       date: new Date(),
@@ -47,10 +48,10 @@ export class OrdersService {
       status: 'pending',
       order_items: orderItemsIds,
       total: total,
-    });
-    await data.save();
+    })
 
-    return (await data.populate({ path: 'order_items' })).populate('address_id')
+    const result = await this.Order.findById(data._id).lean().populate({ path: 'order_items' }).populate('address_id');
+    return new OrderEntity(result);
   }
 
   async findAll(): Promise<OrderEntity[]> {
@@ -81,7 +82,15 @@ export class OrdersService {
     return `This action updates a #${id} order`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async remove(id: string) {
+    const order = await this.Order.findByIdAndDelete(id).lean();
+    console.log(order)
+
+    if (!order) {
+      throw new ResponseError(404, 'Order not found');
+    }
+
+    await this.OrderItem.deleteMany({ _id: { $in: order.order_items } });
+    return new OrderEntity(order);
   }
 }

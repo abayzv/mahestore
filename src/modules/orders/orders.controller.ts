@@ -48,15 +48,10 @@ export class OrdersController {
   }
 
   @SerializeOptions({
-    groups: [ORDER_SINGLE]
+    groups: [ORDER_LIST]
   })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+    return this.ordersService.remove(id);
   }
 }

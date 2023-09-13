@@ -37,6 +37,9 @@ export class OrderEntity {
     @Exclude()
     order_items: OrderItemEntity[];
 
+    @Exclude()
+    customer_id: string;
+
 
     constructor(partial: Partial<OrderEntity>) {
         Object.assign(this, partial);
