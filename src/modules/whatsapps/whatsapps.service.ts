@@ -91,7 +91,10 @@ export class WhatsappsService {
 
     isActive = async (userId: string) => {
         const whatsapp = await this.whatsappModel.findOne({ userId: userId }).lean();
-        return whatsapp.isActivated;
+        return {
+            isActive: whatsapp.isActivated,
+            phoneNumber: whatsapp.phoneNumber
+        }
     }
 
     revokeAccess = async (userId: string) => {

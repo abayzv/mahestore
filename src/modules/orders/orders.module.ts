@@ -5,6 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OrderSchema } from './schema/order.schema';
 import { OrderItemSchema } from './schema/orderItem.schema';
+import { MidtransModule } from '../midtrans/midtrans.module';
+import { WhatsappsModule } from '../whatsapps/whatsapps.module';
 
 @Module({
   imports: [
@@ -19,7 +21,10 @@ import { OrderItemSchema } from './schema/orderItem.schema';
     MongooseModule.forFeature([
       { name: 'Order', schema: OrderSchema },
       { name: 'OrderItem', schema: OrderItemSchema }
-    ])],
+    ]),
+    MidtransModule,
+    WhatsappsModule
+  ],
   controllers: [OrdersController],
   providers: [OrdersService],
 })

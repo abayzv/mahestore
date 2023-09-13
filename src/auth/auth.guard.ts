@@ -45,9 +45,11 @@ export class AuthGuard implements CanActivate {
             return true;
         }
 
-        const isActive = await this.whatsappService.isActive(payload['id']);
-        if (!isActive) {
+        const whatsapp = await this.whatsappService.isActive(payload['id']);
+        if (!whatsapp.isActive) {
             throw new ResponseError(401, 'Unauthorized');
+        } else {
+            request['user'].phoneNumber = whatsapp.phoneNumber;
         }
 
 

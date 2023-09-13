@@ -20,6 +20,7 @@ const port = new ConfigService().get('MIDTRANS_SERVICE_PORT');
       }
     ]),
   ],
+  exports: [MidtransService],
   controllers: [MidtransController],
   providers: [MidtransService],
 })

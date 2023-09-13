@@ -3,6 +3,7 @@ import { CreateMidtranDto } from './dto/create-midtran.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateTransaction } from './midtrans.interface';
 import { Request } from 'express';
+import { catchError, firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class MidtransService {
@@ -25,7 +26,11 @@ export class MidtransService {
       }
     }
 
-    return this.client.send('create_transaction', data);
+    const result = await firstValueFrom(this.client.send('create_transaction', data).pipe(catchError((error) => {
+      throw error
+    })));
+
+    return result;
   }
 
   findOne(id: string) {

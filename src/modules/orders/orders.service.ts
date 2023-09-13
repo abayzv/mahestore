@@ -8,6 +8,9 @@ import { Request } from 'express';
 import { Types } from 'mongoose';
 import { OrderItemEntity } from './entities/orderItem.entity';
 import { ResponseError } from 'src/common/error/error-exception';
+import { MidtransService } from '../midtrans/midtrans.service';
+import { CreateMidtranDto } from '../midtrans/dto/create-midtran.dto';
+import { WhatsappsService } from '../whatsapps/whatsapps.service';
 
 @Injectable()
 export class OrdersService {
@@ -15,6 +18,8 @@ export class OrdersService {
   constructor(
     @InjectModel('Order') private Order: Model<OrderEntity>,
     @InjectModel('OrderItem') private OrderItem: Model<OrderItemEntity>,
+    private midtransService: MidtransService,
+    private whatsappsService: WhatsappsService
   ) { }
 
   async create(createOrderDto: CreateOrderDto, req: Request) {
@@ -51,6 +56,28 @@ export class OrdersService {
     })
 
     const result = await this.Order.findById(data._id).lean().populate({ path: 'order_items' }).populate('address_id');
+
+    const dataMidtrans: CreateMidtranDto = {
+      order_id: new String(result._id).toString(),
+      gross_amount: result.total
+    }
+
+    const midtrans = await this.midtransService.create(dataMidtrans, req)
+    const message = `
+-----------------------------------
+PT MAHESA DIGITAL INDONESIA
+-----------------------------------
+*INVOICE*
+-----------------------------------
+*Order ID:* ${result.reference_number}
+*Order Date:* ${result.date.toLocaleDateString()}
+*Order Status:* ${result.status}
+*Total:* Rp. ${result.total}
+*Payment Link:* ${midtrans['redirect_url']}
+-----------------------------------
+    `
+    await this.whatsappsService.sendMessage(req['user'].phoneNumber, message)
+
     return new OrderEntity(result);
   }
 
