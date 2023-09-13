@@ -2,20 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ICreateOrder } from './interfaces/create-order.interface';
-import { ICreateOrderItem } from './interfaces/create-order-item.interface';
+import { OrderEntity } from './entities/order.entity';
 import { Model } from 'mongoose';
 import { Request } from 'express';
 import { Types } from 'mongoose';
-import { Order } from './schema/order.schema';
-import { OrderItem } from './schema/orderItem.schema';
+import { OrderItemEntity } from './entities/orderItem.entity';
 
 @Injectable()
 export class OrdersService {
 
   constructor(
-    @InjectModel('Order') private Order: Model<ICreateOrder>,
-    @InjectModel('OrderItem') private OrderItem: Model<ICreateOrderItem[]>,
+    @InjectModel('Order') private Order: Model<OrderEntity>,
+    @InjectModel('OrderItem') private OrderItem: Model<OrderItemEntity>,
   ) { }
 
   async create(createOrderDto: CreateOrderDto, req: Request) {
@@ -35,33 +33,48 @@ export class OrdersService {
     });
 
     const orderItems = await this.OrderItem.insertMany(orderItemsData);
+    const orderItemsIds = orderItems.map((orderItem) => {
+      return orderItem._id;
+    });
 
     const data = new this.Order({
       reference_number: 'MHS-' + Math.floor(Math.random() * 1000) + "-" + Date.now(),
       customer_id: userId,
-      address_id: new Types.ObjectId(createOrderDto.address_id),
       date: new Date(),
+      address_id: new Types.ObjectId(createOrderDto.address_id),
       expedition_fee: createOrderDto.expedition_fee,
       expedition_name: createOrderDto.expedition_name,
       status: 'pending',
+      order_items: orderItemsIds,
       total: total,
     });
     await data.save();
 
-    for (const orderItem of orderItems) {
-      await this.Order.findByIdAndUpdate(data._id, { $addToSet: { order_items: orderItem._id } });
+    return (await data.populate({ path: 'order_items' })).populate('address_id')
+  }
+
+  async findAll(): Promise<OrderEntity[]> {
+    const orders = await this.Order.find().lean().populate({ path: 'order_items' }).populate('address_id');
+    return orders.map((order) => {
+      return new OrderEntity(order);
+    });
+  }
+
+  async findOne(id: string) {
+    const order = await this.Order.findById(id).lean().populate({ path: 'order_items' }).populate('address_id');
+    return new OrderEntity(order);
+  }
+
+  async findOrderItems(id: string) {
+    const order = await this.Order.findById(id).lean()
+    const orderItem = []
+
+    for (const item of order.order_items) {
+      const orderItemData = await this.OrderItem.findById(item._id).lean().populate('product_id');
+      orderItem.push(new OrderItemEntity(orderItemData))
     }
 
-    return data;
-  }
-
-  findAll() {
-    return `This action returns all orders`;
-  }
-
-  findOne(id: string) {
-    // return order with address and order items
-    return this.Order.findById(id).populate('order_items');
+    return orderItem;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

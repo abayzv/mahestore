@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Address } from './schema/address.schema';
 
 @Injectable()
 export class AddressesService {
+
+  constructor(@InjectModel(Address.name) private addressModel: Model<Address>) { }
+
   create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
+    const data = new this.addressModel(createAddressDto);
+    return data.save();
   }
 
   findAll() {

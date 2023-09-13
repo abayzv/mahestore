@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
 import { OrderItem } from './orderItem.schema';
+import { Address } from 'src/modules/addresses/schema/address.schema';
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -20,7 +21,7 @@ export class Order {
     status: string;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Address' })
-    address_id: Types.ObjectId;
+    address_id: Address;
 
     @Prop()
     expedition_name: string;
@@ -28,7 +29,7 @@ export class Order {
     @Prop()
     expedition_fee: number;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'OrderItem' })
+    @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'OrderItem' }])
     order_items: OrderItem[];
 
     @Prop()
