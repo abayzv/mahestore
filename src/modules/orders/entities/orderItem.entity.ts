@@ -22,6 +22,7 @@ export class OrderItemEntity {
         return {
             name: product.name,
             description: product.description,
+            media: product.media_url
         }
     })
     product_id: ProductEntity;

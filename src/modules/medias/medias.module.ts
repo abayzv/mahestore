@@ -17,6 +17,7 @@ import { MediaSchema } from './schema/media.schema';
   }),
     MongooseModule.forFeature([{ name: 'Media', schema: MediaSchema }]),],
   controllers: [MediasController],
+  exports: [MediasService],
   providers: [MediasService],
 })
 export class MediasModule { }

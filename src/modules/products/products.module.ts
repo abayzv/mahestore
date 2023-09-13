@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductSchema } from './schema/product.schema';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
+import { MediasModule } from '../medias/medias.module';
 
 
 @Module({
@@ -17,7 +18,9 @@ import { ConfigService } from '@nestjs/config/dist';
         dbName: config.get<string>('MONGODB_DB_NAME'),
       }),
     }),
-    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }])],
+    MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
+    MediasModule
+  ],
   controllers: [ProductsController],
   providers: [ProductsService],
 })

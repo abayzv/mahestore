@@ -6,10 +6,14 @@ import { Model } from 'mongoose';
 import { IProduct } from './interface/product.interface';
 import { ResponseError } from '../../common/error/error-exception';
 import { ProductEntity } from './entities/product.entity';
+import { MediasService } from '../medias/medias.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(@InjectModel('Product') private productModel: Model<IProduct>) { }
+  constructor(
+    @InjectModel('Product') private productModel: Model<IProduct>,
+    private mediaService: MediasService
+  ) { }
 
   async create(createProductDto: CreateProductDto): Promise<ProductEntity> {
 
@@ -19,8 +23,11 @@ export class ProductsService {
       throw new ResponseError(400, 'Product already exist')
     }
 
-    const product = new this.productModel(createProductDto);
+    const media = await this.mediaService.findOne(createProductDto.media_id);
+
+    const product = new this.productModel({ ...createProductDto, media_url: media.path });
     product.save();
+
     return new ProductEntity(product.toObject());
   }
 
@@ -36,12 +43,15 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductEntity> {
 
-    const existingProduct = await this.productModel.findByIdAndUpdate(
-      id,
-      updateProductDto,
-    ).lean();
+    if (updateProductDto.media_id) {
+      const media = await this.mediaService.findOne(updateProductDto.media_id);
 
-    return new ProductEntity(existingProduct);
+      const existingProduct = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, media_url: media.path }).lean();
+      return new ProductEntity(await this.productModel.findById(id).lean());
+    } else {
+      await this.productModel.findByIdAndUpdate(id, { ...updateProductDto }).lean();
+      return new ProductEntity(await this.productModel.findById(id).lean());
+    }
 
   }
 

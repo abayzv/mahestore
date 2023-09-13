@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -14,6 +14,9 @@ export class Product {
 
     @Prop()
     price: number;
+
+    @Prop()
+    media_url: string;
 
     @Prop()
     category: string;

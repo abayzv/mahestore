@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
+import { Types } from "mongoose";
 
 export class CreateProductDto {
     @IsNotEmpty()
@@ -10,6 +11,10 @@ export class CreateProductDto {
     @IsString()
     @MaxLength(200)
     description: string;
+
+    @IsNotEmpty()
+    @IsString()
+    media_id: string;
 
     @IsNotEmpty()
     @IsNumber()

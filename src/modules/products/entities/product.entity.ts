@@ -1,5 +1,6 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
+import { MediaEntity } from 'src/modules/medias/entities/media.entity';
 
 export const PRODUCT_SINGLE = 'product_single';
 export const PRODUCT_LIST = 'product_list';
@@ -23,6 +24,9 @@ export class ProductEntity {
 
     @Expose({ groups: [PRODUCT_SINGLE] })
     description: string;
+
+    @Expose({ groups: [PRODUCT_SINGLE, PRODUCT_LIST] })
+    media_url: string;
 
     constructor(partial: Partial<ProductEntity>) {
         Object.assign(this, partial);
