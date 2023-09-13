@@ -60,6 +60,10 @@ export class WhatsappsService {
             verify_token: verifyToken
         });
 
+        if (!data) {
+            throw new ResponseError(401, 'Invalid verification code');
+        }
+
         // check is expired
         const now = Date.now()
         const expired = data.expires_in

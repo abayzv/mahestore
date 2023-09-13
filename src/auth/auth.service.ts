@@ -15,8 +15,8 @@ export class AuthService {
     port: string = this.configService.get<string>('AUTH_SERVICE_PORT');
     baseUrl: string = `${this.url}:${this.port}/api/v1`
 
-    async createJwtToken(id: number, email: string) {
-        const payload = { id, email }
+    async createJwtToken(id: number, email: string, role: { id: number, name: string }) {
+        const payload = { id, email, role }
         return await this.jwtService.signAsync(payload)
     }
 
@@ -34,7 +34,7 @@ export class AuthService {
         await this.whatsappService.revokeAccess(data.user.id)
 
         return {
-            accessToken: await this.createJwtToken(data.user.id, data.user.email),
+            accessToken: await this.createJwtToken(data.user.id, data.user.email, { id: data.user.role.id, name: data.user.role.name }),
             // refreshToken: data.refreshToken,
         }
     }
@@ -44,7 +44,7 @@ export class AuthService {
         const data = await this.useApi(url, 'POST', { email, password })
 
         return {
-            accessToken: await this.createJwtToken(data.user.id, data.user.email),
+            accessToken: await this.createJwtToken(data.user.id, data.user.email, { id: data.user.role.id, name: data.user.role.name }),
             // refreshToken: data.refreshToken,
         }
     }
@@ -67,7 +67,7 @@ export class AuthService {
         await this.whatsappService.create(createWhatsapp)
 
         return {
-            accessToken: await this.createJwtToken(loginData.user.id, loginData.user.email),
+            accessToken: await this.createJwtToken(loginData.user.id, loginData.user.email, { id: data.user.role.id, name: data.user.role.name }),
             // refreshToken: loginData.refreshToken,
         }
     }
