@@ -15,6 +15,10 @@ import { WhatsappsService } from '../whatsapps/whatsapps.service';
 @Injectable()
 export class OrdersService {
 
+  numberToIDR(number: number) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number)
+  }
+
   constructor(
     @InjectModel('Order') private Order: Model<OrderEntity>,
     @InjectModel('OrderItem') private OrderItem: Model<OrderItemEntity>,
@@ -24,8 +28,9 @@ export class OrdersService {
 
   async create(createOrderDto: CreateOrderDto, req: Request) {
     const userId = req['user'].id;
+    const products = []
 
-    let total = 0;
+    let total = createOrderDto.expedition_fee;
     createOrderDto.order_items.forEach((orderItem) => {
       total += orderItem.unit_price * orderItem.quantity;
     });
@@ -39,9 +44,12 @@ export class OrdersService {
     });
 
     const orderItems = await this.OrderItem.insertMany(orderItemsData);
+
     const orderItemsIds = orderItems.map((orderItem) => {
       return orderItem._id;
     });
+
+    // Create Order
 
     const data = await this.Order.create({
       reference_number: 'MHS-' + Math.floor(Math.random() * 1000) + "-" + Date.now(),
@@ -51,28 +59,55 @@ export class OrdersService {
       expedition_fee: createOrderDto.expedition_fee,
       expedition_name: createOrderDto.expedition_name,
       status: 'pending',
+      payment_token: '',
+      payment_url: '',
       order_items: orderItemsIds,
       total: total,
     })
 
-    const result = await this.Order.findById(data._id).lean().populate({ path: 'order_items' }).populate('address_id');
-
+    // Create Midtrans
     const dataMidtrans: CreateMidtranDto = {
-      order_id: new String(result._id).toString(),
-      gross_amount: result.total
+      order_id: new String(data._id).toString(),
+      gross_amount: data.total
     }
-
     const midtrans = await this.midtransService.create(dataMidtrans, req)
+    await this.Order.findByIdAndUpdate(data._id, {
+      payment_token: midtrans['token'],
+      payment_url: midtrans['redirect_url']
+    })
+
+    const result = await this.Order.findById(data._id).lean().populate({ path: 'order_items' }).populate('address_id');
+    const orderList = await this.findOrderItems(new String(data._id).toString())
+
+    let orderTotal = 0
     const message = `
 -----------------------------------
 PT MAHESA DIGITAL INDONESIA
 -----------------------------------
 *INVOICE*
 -----------------------------------
+*Customer Name:* ${req['user'].name}
 *Order ID:* ${result.reference_number}
 *Order Date:* ${result.date.toLocaleDateString()}
-*Order Status:* ${result.status}
-*Total:* Rp. ${result.total}
+*Order Status:* ${result.status}  
+-----------------------------------
+*Product List*
+-----------------------------------
+${orderList.map((item) => {
+      orderTotal += item.unit_price * item.quantity
+      return `
+*Product Name:* ${item.product_id.name}
+*Quantity:* ${item.quantity}
+*Unit Price:* Rp. ${this.numberToIDR(item.unit_price)}
+*Sub Total:* Rp. ${this.numberToIDR((item.unit_price * item.quantity))}
+`
+    })}
+-----------------------------------
+*Order Total:* Rp. ${this.numberToIDR(orderTotal)}
+*Expedition Fee:* Rp. ${this.numberToIDR(result.expedition_fee)}
+-----------------------------------
+*Grand Total:* Rp. ${this.numberToIDR(result.total)}
+-----------------------------------
 *Payment Link:* ${midtrans['redirect_url']}
 -----------------------------------
     `

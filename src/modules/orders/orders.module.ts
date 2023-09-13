@@ -7,6 +7,7 @@ import { OrderSchema } from './schema/order.schema';
 import { OrderItemSchema } from './schema/orderItem.schema';
 import { MidtransModule } from '../midtrans/midtrans.module';
 import { WhatsappsModule } from '../whatsapps/whatsapps.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { WhatsappsModule } from '../whatsapps/whatsapps.module';
       { name: 'OrderItem', schema: OrderItemSchema }
     ]),
     MidtransModule,
-    WhatsappsModule
+    WhatsappsModule,
+    ProductsModule
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

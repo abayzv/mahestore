@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Req, UseInterceptors, Post, UploadedFile } from '@nestjs/common';
+import { Controller, UseGuards, Get, Req, UseInterceptors, Post, UploadedFile, Param } from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -14,15 +14,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class MediasController {
   constructor(private readonly mediasService: MediasService) { }
 
-  @Get()
-  async findAll(@Req() req: Request) {
-    const token = req.headers.authorization?.split(' ')[1];
-    const user = req['user'];
+  // @Get()
+  // async findAll(@Req() req: Request) {
+  //   const token = req.headers.authorization?.split(' ')[1];
+  //   const user = req['user'];
 
-    return this.mediasService.findAll(token, user.userId);
-  }
+  //   return this.mediasService.findAll(token, user.userId);
+  // }
 
-  @Post()
+  @Post('/upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -41,6 +41,11 @@ export class MediasController {
     const user = req['user'];
 
     return this.mediasService.upload(token, user.userId, file);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.mediasService.findOne(id);
   }
 
 }

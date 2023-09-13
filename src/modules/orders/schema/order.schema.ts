@@ -15,6 +15,12 @@ export class Order {
     reference_number: string;
 
     @Prop()
+    payment_token: string;
+
+    @Prop()
+    payment_url: string;
+
+    @Prop()
     date: Date;
 
     @Prop()

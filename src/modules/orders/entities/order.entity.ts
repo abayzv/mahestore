@@ -21,6 +21,12 @@ export class OrderEntity {
     @Expose({ groups: [ORDER_SINGLE, ORDER_LIST] })
     total: number;
 
+    @Expose({ groups: [ORDER_SINGLE, ORDER_LIST] })
+    payment_token: number;
+
+    @Expose({ groups: [ORDER_SINGLE, ORDER_LIST] })
+    payment_url: number;
+
     @Expose({ groups: [ORDER_SINGLE] })
     expedition_name: string;
 

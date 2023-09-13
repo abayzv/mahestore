@@ -18,6 +18,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
     MidtransModule,
     OrdersModule,
     AddressesModule,
+    MediasModule
   ],
 })
 export class AppModule { }
