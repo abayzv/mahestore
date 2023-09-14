@@ -49,8 +49,6 @@ export class OrdersService {
       return orderItem._id;
     });
 
-    // Create Order
-
     const data = await this.Order.create({
       reference_number: 'MHS-' + Math.floor(Math.random() * 1000) + "-" + Date.now(),
       customer_id: userId,
@@ -65,7 +63,6 @@ export class OrdersService {
       total: total,
     })
 
-    // Create Midtrans
     const dataMidtrans: CreateMidtranDto = {
       order_id: new String(data._id).toString(),
       gross_amount: data.total

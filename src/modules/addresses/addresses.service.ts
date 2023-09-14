@@ -4,30 +4,44 @@ import { UpdateAddressDto } from './dto/update-address.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Address } from './schema/address.schema';
+import { Request } from 'express';
 
 @Injectable()
 export class AddressesService {
 
   constructor(@InjectModel(Address.name) private addressModel: Model<Address>) { }
 
-  create(createAddressDto: CreateAddressDto) {
-    const data = new this.addressModel(createAddressDto);
+  create(createAddressDto: CreateAddressDto, req: Request) {
+    const userId = req['user'].id;
+    const data = new this.addressModel({ ...createAddressDto, customer_id: userId });
     return data.save();
   }
 
-  findAll() {
-    return `This action returns all addresses`;
+  async findAll(req: Request) {
+    const userId = req['user'].id;
+    const data = await this.addressModel.find({ customer_id: userId }).lean();
+    const result = data.map((address) => {
+      const { customer_id, ...rest } = address;
+      return rest;
+    })
+
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
+  async findOne(id: string) {
+    const { customer_id, ...result } = await this.addressModel.findById(id).lean();
+    return result;
   }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+  async update(id: string, updateAddressDto: UpdateAddressDto, req: Request) {
+    const userId = req['user'].id;
+    await this.addressModel.findByIdAndUpdate(id, { ...updateAddressDto, customer_id: userId })
+    const { customer_id, ...result } = await this.addressModel.findById(id).lean()
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+  async remove(id: number) {
+    const { customer_id, ...result } = await this.addressModel.findByIdAndDelete(id).lean()
+    return result;
   }
 }

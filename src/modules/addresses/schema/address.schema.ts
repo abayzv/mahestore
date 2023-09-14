@@ -7,6 +7,9 @@ export type AddressDocument = HydratedDocument<Address>;
 export class Address {
 
     @Prop()
+    customer_id: number;
+
+    @Prop()
     name: string;
 
     @Prop()

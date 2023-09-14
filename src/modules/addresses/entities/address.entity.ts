@@ -2,6 +2,9 @@ import { Exclude, Expose, Transform } from 'class-transformer';
 import { ObjectId } from 'mongoose';
 export class AddressEntity {
 
+    @Exclude()
+    customer_id: number;
+
     @Expose()
     name: string;
 
