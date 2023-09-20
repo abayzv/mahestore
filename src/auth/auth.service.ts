@@ -76,8 +76,12 @@ export class AuthService {
         const url = this.baseUrl + '/auth/me';
         const data = await this.useApiAuth(url, 'GET', {}, token)
 
-        const isActivated = await this.whatsappService.findOne(data.id)
-        if (isActivated) data.status.name = "active"
+        const whatsapp = await this.whatsappService.findOne(data.id)
+        if (whatsapp.isActivated) {
+            data.status.name = "active"
+        } else {
+            data.status.name = "inactive"
+        }
 
         return {
             id: data.id,
