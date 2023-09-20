@@ -18,6 +18,8 @@ services:
       - /app/node_modules
     ports:
       - ${APP_PORT}:${APP_PORT}
+    expose:
+      - ${APP_PORT}
     command: npm run start:dev
     env_file:
       - .env
