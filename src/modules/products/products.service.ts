@@ -7,12 +7,14 @@ import { IProduct } from './interface/product.interface';
 import { ResponseError } from '../../common/error/error-exception';
 import { ProductEntity } from './entities/product.entity';
 import { MediasService } from '../medias/medias.service';
+import { OfficialStore } from '../official-stores/entities/official-store.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel('Product') private productModel: Model<IProduct>,
-    private mediaService: MediasService
+    private mediaService: MediasService,
+    @InjectModel('OfficialStore') private officialStoreModel: Model<OfficialStore>,
   ) { }
 
   async create(createProductDto: CreateProductDto): Promise<ProductEntity> {
@@ -21,6 +23,12 @@ export class ProductsService {
 
     if (isExist) {
       throw new ResponseError(400, 'Product already exist')
+    }
+
+    if (createProductDto.official_store_id) {
+      const officialStore = await this.officialStoreModel.findById(createProductDto.official_store_id);
+
+      if (!officialStore) throw new ResponseError(400, 'Official store not found');
     }
 
     let media_url = '';
@@ -35,34 +43,48 @@ export class ProductsService {
       media_url = createProductDto.media_url;
     }
 
-    const product = new this.productModel({ ...createProductDto, media_url: media_url });
-    product.save();
+    const product = await this.productModel.create({ ...createProductDto, media_url: media_url });
+    const result = await this.productModel.findById(product._id).lean().populate('official_store_id');
 
-    return new ProductEntity(product.toObject());
+    return new ProductEntity(result);
   }
 
   async findAll(): Promise<ProductEntity[]> {
-    const products: ProductEntity[] = await this.productModel.find().lean();
+    const products: ProductEntity[] = await this.productModel.find().lean().populate('official_store_id');
     return products.map(product => new ProductEntity(product));
   }
 
   async findOne(id: string): Promise<ProductEntity> {
-    const product: ProductEntity = await this.productModel.findById(id).lean();
+    const product: ProductEntity = await this.productModel.findById(id).lean().populate('official_store_id');
     return new ProductEntity(product);
   }
 
   async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductEntity> {
 
+    let data = new this.productModel();
+
+    if (updateProductDto.official_store_id) {
+      const officialStore = await this.officialStoreModel.findById(updateProductDto.official_store_id);
+
+      if (!officialStore) throw new ResponseError(400, 'Official store not found');
+
+      data = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, official_store_id: officialStore._id }, { new: true }).lean().populate('official_store_id');
+    }
+
     if (updateProductDto.media_id) {
       const media = await this.mediaService.findOne(updateProductDto.media_id);
 
-      const existingProduct = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, media_url: media.path }, { new: true }).lean();
-      return new ProductEntity(existingProduct);
+      data = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, media_url: media.path }, { new: true }).lean().populate('official_store_id');
     } else {
-      const data = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto }, { new: true }).lean();
-      return new ProductEntity(data);
+      data = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto }, { new: true }).lean().populate('official_store_id');
     }
 
+    return new ProductEntity(data);
+  }
+
+  async assignOfficialStore(id: string, officialStoreId: string): Promise<ProductEntity> {
+    const product: ProductEntity = await this.productModel.findByIdAndUpdate(id, { official_store_id: officialStoreId }, { new: true }).lean();
+    return new ProductEntity(product);
   }
 
   async remove(id: string): Promise<ProductEntity> {

@@ -19,6 +19,11 @@ import { OfficialStoreSchema } from './official-stores.schema';
       { name: 'OfficialStore', schema: OfficialStoreSchema },
     ])
   ],
+  exports: [
+    MongooseModule.forFeature([
+      { name: 'OfficialStore', schema: OfficialStoreSchema },
+    ])
+  ],
   controllers: [OfficialStoresController],
   providers: [OfficialStoresService],
 })

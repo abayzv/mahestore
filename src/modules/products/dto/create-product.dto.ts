@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
+import { IsObjectId } from "src/common/decorator/IsObjectId.decorator";
 
 export class CreateProductDto {
     @IsNotEmpty()
@@ -11,6 +12,13 @@ export class CreateProductDto {
     @IsString()
     @MaxLength(200)
     description: string;
+
+    @IsObjectId({
+        message: 'official_store_id must be an ObjectId'
+    })
+    @IsNotEmpty()
+    @IsString()
+    official_store_id: string;
 
     @IsNotEmpty({
         message: 'If want to use image from url, leave this field to 0'

@@ -24,6 +24,9 @@ export class Product {
     @Prop()
     tags: string[];
 
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'OfficialStore' })
+    official_store_id: MongooseSchema.Types.ObjectId;
+
     constructor(partial: Partial<Product>) {
         Object.assign(this, partial)
     }

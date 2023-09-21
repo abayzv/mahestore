@@ -28,6 +28,15 @@ export class ProductEntity {
     @Expose({ groups: [PRODUCT_SINGLE, PRODUCT_LIST] })
     media_url: string;
 
+    @Expose({ groups: [PRODUCT_SINGLE, PRODUCT_LIST], name: 'official_store' })
+    @Transform(({ value }) => {
+        return {
+            name: value.name,
+            picture_url: value.picture_url,
+        }
+    })
+    official_store_id: Types.ObjectId;
+
     constructor(partial: Partial<ProductEntity>) {
         Object.assign(this, partial);
     }

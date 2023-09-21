@@ -6,6 +6,7 @@ import { ProductSchema } from './schema/product.schema';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
 import { MediasModule } from '../medias/medias.module';
+import { OfficialStoresModule } from '../official-stores/official-stores.module';
 
 
 @Module({
@@ -19,7 +20,8 @@ import { MediasModule } from '../medias/medias.module';
       }),
     }),
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
-    MediasModule
+    MediasModule,
+    OfficialStoresModule
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
