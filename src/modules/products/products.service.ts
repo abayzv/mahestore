@@ -23,9 +23,19 @@ export class ProductsService {
       throw new ResponseError(400, 'Product already exist')
     }
 
-    const media = await this.mediaService.findOne(createProductDto.media_id);
+    let media_url = '';
 
-    const product = new this.productModel({ ...createProductDto, media_url: media.path });
+    if (createProductDto.media_id !== '0') {
+      const media = await this.mediaService.findOne(createProductDto.media_id);
+
+      if (!media) throw new ResponseError(400, 'Media not found');
+
+      media_url = media.path;
+    } else {
+      media_url = createProductDto.media_url;
+    }
+
+    const product = new this.productModel({ ...createProductDto, media_url: media_url });
     product.save();
 
     return new ProductEntity(product.toObject());
@@ -46,11 +56,11 @@ export class ProductsService {
     if (updateProductDto.media_id) {
       const media = await this.mediaService.findOne(updateProductDto.media_id);
 
-      const existingProduct = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, media_url: media.path }).lean();
-      return new ProductEntity(await this.productModel.findById(id).lean());
+      const existingProduct = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto, media_url: media.path }, { new: true }).lean();
+      return new ProductEntity(existingProduct);
     } else {
-      await this.productModel.findByIdAndUpdate(id, { ...updateProductDto }).lean();
-      return new ProductEntity(await this.productModel.findById(id).lean());
+      const data = await this.productModel.findByIdAndUpdate(id, { ...updateProductDto }, { new: true }).lean();
+      return new ProductEntity(data);
     }
 
   }

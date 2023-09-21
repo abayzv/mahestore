@@ -1,10 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
-import { Types } from "mongoose";
 
 export class CreateProductDto {
     @IsNotEmpty()
     @IsString()
-    @MaxLength(50)
+    @MaxLength(200)
     name: string;
 
     @IsNotEmpty()
@@ -12,9 +12,15 @@ export class CreateProductDto {
     @MaxLength(200)
     description: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({
+        message: 'If want to use image from url, leave this field to 0'
+    })
     @IsString()
-    media_id: string;
+    @ApiProperty({ default: '0' })
+    media_id: string = '0';
+
+    @IsString()
+    media_url: string;
 
     @IsNotEmpty()
     @IsNumber()
