@@ -11,12 +11,12 @@ import { ORDER_SINGLE, ORDER_LIST } from './entities/order.entity';
 
 @ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor, FormatResponseInterceptor)
+@UseGuards(AuthGuard)
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
-  @UseGuards(AuthGuard)
   @SerializeOptions({
     groups: [ORDER_SINGLE]
   })

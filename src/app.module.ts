@@ -8,6 +8,7 @@ import { WhatsappsModule } from './modules/whatsapps/whatsapps.module';
 import { MidtransModule } from './modules/midtrans/midtrans.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { AddressesModule } from './modules/addresses/addresses.module';
+import { CartsModule } from './modules/carts/carts.module';
 @Module({
   imports: [
     ProductsModule,
@@ -18,7 +19,8 @@ import { AddressesModule } from './modules/addresses/addresses.module';
     MidtransModule,
     OrdersModule,
     AddressesModule,
-    MediasModule
+    MediasModule,
+    CartsModule
   ],
 })
 export class AppModule { }

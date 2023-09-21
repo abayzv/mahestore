@@ -35,6 +35,8 @@ export class AuthGuard implements CanActivate {
         const payload = this.jwtService.decode(token)
         request['user'] = payload;
 
+        if (payload['role'].id === 1) return true;
+
         const skipCheck = [
             '/api/v1/auth/me',
             '/api/v1/auth/refresh',
