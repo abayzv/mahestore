@@ -9,6 +9,7 @@ import { MidtransModule } from './modules/midtrans/midtrans.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { AddressesModule } from './modules/addresses/addresses.module';
 import { CartsModule } from './modules/carts/carts.module';
+import { OfficialStoresModule } from './modules/official-stores/official-stores.module';
 @Module({
   imports: [
     ProductsModule,
@@ -20,7 +21,8 @@ import { CartsModule } from './modules/carts/carts.module';
     OrdersModule,
     AddressesModule,
     MediasModule,
-    CartsModule
+    CartsModule,
+    OfficialStoresModule
   ],
 })
 export class AppModule { }
