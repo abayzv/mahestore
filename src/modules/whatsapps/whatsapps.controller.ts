@@ -33,30 +33,46 @@ export class WhatsappsController {
     return this.whatsappsService.sendOtp(userId);
   }
 
+  //   @ApiBearerAuth()
+  //   @UseGuards(AuthGuard, RoleGuard)
+  //   @Get('/test')
+  //   async test() {
+  //     const number: number = 6285259622409
+  //     // create order invoice here
+  //     const message: string = `
+  // -----------------------------------
+  // PT MAHESA DIGITAL INDONESIA
+  // -----------------------------------
+  // *INVOICE*
+  // -----------------------------------
+  // *Order ID:* 123456789
+  // *Order Date:* 2021-09-09
+  // *Order Status:* Paid
+  // *Payment Method:* Bank Transfer
+  // *Payment Date:* 2021-09-09
+  // *Payment Status:* Paid
+  // *Total:* Rp. 100.000
+  // *Payment Proof:* https://www.google.com
+  // -----------------------------------
+  //     `
+
+  //     return this.whatsappsService.sendMessage(number, message)
+  //   }
+
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RoleGuard)
-  @Get('/test')
-  async test() {
-    const number: number = 6285259622409
-    // create order invoice here
-    const message: string = `
------------------------------------
-PT MAHESA DIGITAL INDONESIA
------------------------------------
-*INVOICE*
------------------------------------
-*Order ID:* 123456789
-*Order Date:* 2021-09-09
-*Order Status:* Paid
-*Payment Method:* Bank Transfer
-*Payment Date:* 2021-09-09
-*Payment Status:* Paid
-*Total:* Rp. 100.000
-*Payment Proof:* https://www.google.com
------------------------------------
-    `
+  @Roles('Admin')
+  @Get('/connect')
+  async connectWhatsapp() {
+    return this.whatsappsService.connectWhatsapp()
+  }
 
-    return this.whatsappsService.sendMessage(number, message)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('Admin')
+  @Get('/get-status')
+  async getStatus() {
+    return this.whatsappsService.getStatus()
   }
 
 }

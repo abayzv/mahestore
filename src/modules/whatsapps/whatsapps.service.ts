@@ -102,6 +102,20 @@ export class WhatsappsService {
         await this.whatsappModel.findOneAndUpdate({ userId: userId }, { isActivated: false }).lean();
     }
 
+    async connectWhatsapp() {
+        const connect = await this.useApi(this.baseUrl + '/wa/connect', 'POST', {
+            user_id: this.userId,
+            client_id: this.clientId
+        })
+
+        return connect
+    }
+
+    async getStatus() {
+        const status = await this.useApi(this.baseUrl + `/wa/status?user_id=${this.userId}&client_id=${this.clientId}`, 'GET', {})
+        return status
+    }
+
     async create(createUserWhatsapp: CreateUserWhatsapp): Promise<CreateUserWhatsapp> {
         const whatsapp = await this.whatsappModel.create(createUserWhatsapp);
         return whatsapp;
