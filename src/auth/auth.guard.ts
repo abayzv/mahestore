@@ -25,6 +25,8 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized');
         }
 
+        if (request.url === '/api/v1/auth/refresh-token') return true;
+
         // verify token
         try {
             this.jwtService.verify(token);
@@ -39,7 +41,6 @@ export class AuthGuard implements CanActivate {
 
         const skipCheck = [
             '/api/v1/auth/me',
-            '/api/v1/auth/refresh',
             '/api/v1/whatsapps/verify',
             '/api/v1/whatsapps/send-otp',
         ]
