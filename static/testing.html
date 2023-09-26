@@ -9,18 +9,20 @@
     <h1>tab akan terclose kalau pindah tab</h1>
 
     <script>
-      let isTabActive = false;
-      window.onload = () => {
-        window.onfocus = function () {
-          isTabActive = true;
-        };
-
-        setInterval(() => {
-          if (isTabActive === false) {
-            window.close();
-          }
-        }, 500);
+      let isTabActive = true;
+      window.onfocus = function () {
+        isTabActive = true;
       };
+
+      if (!document.hasFocus()) {
+        isTabActive = false;
+      }
+
+      setInterval(() => {
+        if (!isTabActive) {
+          window.close();
+        }
+      }, 500);
     </script>
   </body>
 </html>
