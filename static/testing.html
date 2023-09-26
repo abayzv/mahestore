@@ -14,11 +14,11 @@
         isTabActive = true;
       };
 
-      window.onblur = function () {
-        isTabActive = false;
-      };
-
       setInterval(() => {
+        if (!document.hasFocus()) {
+          isTabActive = false;
+        }
+
         if (!isTabActive) {
           window.close();
         }
