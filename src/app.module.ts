@@ -10,6 +10,8 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { AddressesModule } from './modules/addresses/addresses.module';
 import { CartsModule } from './modules/carts/carts.module';
 import { OfficialStoresModule } from './modules/official-stores/official-stores.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     ProductsModule,
@@ -22,7 +24,10 @@ import { OfficialStoresModule } from './modules/official-stores/official-stores.
     AddressesModule,
     MediasModule,
     CartsModule,
-    OfficialStoresModule
+    OfficialStoresModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'static'),
+    }),
   ],
 })
 export class AppModule { }

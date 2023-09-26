@@ -18,6 +18,9 @@ async function bootstrap() {
     },
   }));
 
+  // render static html route /test
+
+
   // Media Service
   app.use('/media-service', createProxyMiddleware({
     target: process.env.AUTH_SERVICE_URL + ':' + process.env.AUTH_SERVICE_PORT,
