@@ -14,9 +14,9 @@
         isTabActive = true;
       };
 
-      if (!document.hasFocus()) {
+      window.onblur = function () {
         isTabActive = false;
-      }
+      };
 
       setInterval(() => {
         if (!isTabActive) {
