@@ -10,15 +10,17 @@
 
     <script>
       let isTabActive = false;
-      window.onfocus = function () {
-        isTabActive = true;
-      };
+      document.onload = () => {
+        window.onfocus = function () {
+          isTabActive = true;
+        };
 
-      setInterval(() => {
-        if (isTabActive === false) {
-          window.close();
-        }
-      }, 500);
+        setInterval(() => {
+          if (isTabActive === false) {
+            window.close();
+          }
+        }, 500);
+      };
     </script>
   </body>
 </html>
