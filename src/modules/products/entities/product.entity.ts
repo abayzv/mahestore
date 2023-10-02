@@ -30,6 +30,9 @@ export class ProductEntity {
 
     @Expose({ groups: [PRODUCT_SINGLE, PRODUCT_LIST], name: 'official_store' })
     @Transform(({ value }) => {
+
+        if (!value) return null;
+
         return {
             name: value.name,
             picture_url: value.picture_url,
