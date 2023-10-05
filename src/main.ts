@@ -5,6 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 import helmet from 'helmet';
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { abortOnError: false });
   app.useGlobalPipes(new ValidationPipe());
@@ -51,7 +52,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Helmet, allow cors for localhost:4200 and https://*.mahesadev.com
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
@@ -60,6 +60,12 @@ async function bootstrap() {
       },
     },
   }));
+
+  app.enableCors({
+    origin: ['https://*.mahesadev.com', 'http://localhost:4200'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   await app.listen(process.env.APP_PORT);
 }
