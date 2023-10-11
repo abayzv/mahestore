@@ -80,8 +80,8 @@ export class ProductsService {
     const pagination: IPagination = {
       page: page,
       pageSize: limit,
-      totalPages: Math.ceil(await this.productModel.countDocuments(filter) / limit),
-      totalRecords: await this.productModel.countDocuments(filter)
+      totalPages: Math.ceil(await this.productModel.countDocuments(queryFilter) / limit),
+      totalRecords: await this.productModel.countDocuments(queryFilter)
     }
 
     return new PageEntity(pagination, response);
