@@ -25,11 +25,22 @@ export class OfficialStoresService {
     return officialStore;
   }
 
+  createOfficialStoreQuery(filters: OfficialStoreQueryDto) {
+    const query = {};
+
+    if (filters.name) {
+      query['name'] = { $regex: new RegExp(filters.name, 'i') };
+    }
+
+    return query;
+  }
+
   async findAll(query: OfficialStoreQueryDto): Promise<PageEntity> {
     const { limit, page, ...filter } = query;
-    const { name } = filter;
 
-    const officialStores = await this.OfficialStore.find({ name: { $regex: name, $options: 'i' } }).limit(limit).skip((page - 1) * limit).lean();
+    const queryFilter = this.createOfficialStoreQuery(filter);
+
+    const officialStores = await this.OfficialStore.find(queryFilter).limit(limit).skip((page - 1) * limit).lean();
 
     const data = officialStores.map(officialStore => {
       return {
@@ -47,8 +58,8 @@ export class OfficialStoresService {
     const pagination: IPagination = {
       page: page,
       pageSize: limit,
-      totalRecords: await this.OfficialStore.countDocuments(filter),
-      totalPages: Math.ceil(await this.OfficialStore.countDocuments(filter) / limit)
+      totalRecords: await this.OfficialStore.countDocuments(queryFilter),
+      totalPages: Math.ceil(await this.OfficialStore.countDocuments(queryFilter) / limit)
     }
 
     return new PageEntity(pagination, response);
