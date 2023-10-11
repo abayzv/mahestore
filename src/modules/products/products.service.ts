@@ -20,6 +20,22 @@ export class ProductsService {
     @InjectModel('OfficialStore') private officialStoreModel: Model<OfficialStore>,
   ) { }
 
+  createProductQuery(filters: ProductQueryDto) {
+    const query = {};
+
+    if (filters.name) {
+      query['name'] = { $regex: new RegExp(filters.name, 'i') };
+    }
+    if (filters.category) {
+      query['category'] = filters.category;
+    }
+    if (filters.tags && filters.tags.length > 0) {
+      query['tags'] = { $in: filters.tags };
+    }
+
+    return query;
+  }
+
   async create(createProductDto: CreateProductDto): Promise<ProductEntity> {
 
     const isExist = await this.productModel.findOne({ name: createProductDto.name });
@@ -55,7 +71,10 @@ export class ProductsService {
   async findAll(query: ProductQueryDto): Promise<PageEntity> {
 
     const { limit, page, ...filter } = query;
-    const products: ProductEntity[] = await this.productModel.find({ ...filter }).limit(limit).skip((page - 1) * limit).lean().populate('official_store_id');
+    const queryFilter = this.createProductQuery(filter);
+
+    const products: ProductEntity[] = await this.productModel.find(queryFilter).limit(limit).skip((page - 1) * limit).lean().populate('official_store_id');
+
     const response = products.map(product => new ProductEntity(product));
 
     const pagination: IPagination = {

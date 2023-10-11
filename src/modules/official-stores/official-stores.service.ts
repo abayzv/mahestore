@@ -5,6 +5,9 @@ import { CreateOfficialStoreDto } from './dto/create-official-store.dto';
 import { UpdateOfficialStoreDto } from './dto/update-official-store.dto';
 import { OfficialStore } from './entities/official-store.entity';
 import { Request } from 'express';
+import { OfficialStoreQueryDto } from './dto/official-store-query.dto';
+import { PageEntity } from './entities/page.entity';
+import { IPagination } from 'src/common/interface/pagination.interfaces';
 
 @Injectable()
 export class OfficialStoresService {
@@ -22,8 +25,12 @@ export class OfficialStoresService {
     return officialStore;
   }
 
-  async findAll() {
-    const officialStores = await this.OfficialStore.find().lean();
+  async findAll(query: OfficialStoreQueryDto): Promise<PageEntity> {
+    const { limit, page, ...filter } = query;
+    const { name } = filter;
+
+    const officialStores = await this.OfficialStore.find({ name: { $regex: name, $options: 'i' } }).limit(limit).skip((page - 1) * limit).lean();
+
     const data = officialStores.map(officialStore => {
       return {
         ...officialStore,
@@ -36,7 +43,15 @@ export class OfficialStoresService {
       delete officialStore.followers;
     });
 
-    return data
+    const response = data.map(officialStore => new OfficialStore(officialStore));
+    const pagination: IPagination = {
+      page: page,
+      pageSize: limit,
+      totalRecords: await this.OfficialStore.countDocuments(filter),
+      totalPages: Math.ceil(await this.OfficialStore.countDocuments(filter) / limit)
+    }
+
+    return new PageEntity(pagination, response);
   }
 
   async findOne(id: string, req: Request) {

@@ -1,4 +1,4 @@
-import { Req, Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards } from '@nestjs/common';
+import { Req, Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, Query } from '@nestjs/common';
 import { OfficialStoresService } from './official-stores.service';
 import { CreateOfficialStoreDto } from './dto/create-official-store.dto';
 import { UpdateOfficialStoreDto } from './dto/update-official-store.dto';
@@ -8,6 +8,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { Request } from 'express';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
+import { OfficialStoreQueryDto } from './dto/official-store-query.dto';
 
 @ApiBearerAuth()
 @UseInterceptors(FormatResponseInterceptor)
@@ -24,8 +25,8 @@ export class OfficialStoresController {
   }
 
   @Get()
-  findAll() {
-    return this.officialStoresService.findAll();
+  findAll(@Query() query: OfficialStoreQueryDto) {
+    return this.officialStoresService.findAll(query);
   }
 
   @Get(':id')
