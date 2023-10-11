@@ -25,9 +25,9 @@ import { join } from 'path';
     MediasModule,
     CartsModule,
     OfficialStoresModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'static'),
+    // }),
   ],
 })
 export class AppModule { }

@@ -8,6 +8,9 @@ import { ResponseError } from '../../common/error/error-exception';
 import { ProductEntity } from './entities/product.entity';
 import { MediasService } from '../medias/medias.service';
 import { OfficialStore } from '../official-stores/entities/official-store.entity';
+import { ProductQueryDto } from './dto/product-query.dto';
+import { IPagination } from 'src/common/interface/pagination.interfaces';
+import { PageEntity } from './entities/page.entity';
 
 @Injectable()
 export class ProductsService {
@@ -49,9 +52,20 @@ export class ProductsService {
     return new ProductEntity(result);
   }
 
-  async findAll(): Promise<ProductEntity[]> {
-    const products: ProductEntity[] = await this.productModel.find().lean().populate('official_store_id');
-    return products.map(product => new ProductEntity(product));
+  async findAll(query: ProductQueryDto): Promise<PageEntity> {
+
+    const { limit, page, ...filter } = query;
+    const products: ProductEntity[] = await this.productModel.find({ ...filter }).limit(limit).skip((page - 1) * limit).lean().populate('official_store_id');
+    const response = products.map(product => new ProductEntity(product));
+
+    const pagination: IPagination = {
+      page: page,
+      pageSize: limit,
+      totalPages: Math.ceil(await this.productModel.countDocuments(filter) / limit),
+      totalRecords: await this.productModel.countDocuments(filter)
+    }
+
+    return new PageEntity(pagination, response);
   }
 
   async findOne(id: string): Promise<ProductEntity> {

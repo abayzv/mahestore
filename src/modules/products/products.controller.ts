@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, UseGuards, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -9,6 +9,7 @@ import { PRODUCT_SINGLE, PRODUCT_LIST } from './entities/product.entity';
 import { AuthGuard } from '../../auth/auth.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/auth/role/role.guard';
+import { ProductQueryDto } from './dto/product-query.dto';
 
 @ApiBearerAuth()
 @ApiTags('Products')
@@ -32,8 +33,9 @@ export class ProductsController {
   @SerializeOptions({
     groups: [PRODUCT_LIST]
   })
-  findAll() {
-    return this.productsService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  findAll(@Query() query: ProductQueryDto) {
+    return this.productsService.findAll(query);
   }
 
   @Get(':id')
