@@ -21,8 +21,8 @@ export class CartsController {
   }
 
   @Get()
-  findAll() {
-    return this.cartsService.findAll();
+  findAll(@Req() req: Request) {
+    return this.cartsService.findAll(req);
   }
 
   @Get(':id')

@@ -31,8 +31,10 @@ export class CartsService {
     return new CartEntity(result);
   }
 
-  async findAll() {
-    const carts = await this.Cart.find().lean().populate('product_id');
+  async findAll(req: Request) {
+    const customer_id = req['user'].id;
+
+    const carts = await this.Cart.find({ customer_id }).lean().populate('product_id');
     return carts.map(cart => new CartEntity(cart));
   }
 
