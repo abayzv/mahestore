@@ -125,11 +125,24 @@ export class WhatsappsService {
         return this.whatsappModel.findOne({ userId: userId }).lean();
     }
 
+    async isExist(data: { email: string, phoneNumber: number }): Promise<IWhatsapp> {
+        // check if email or phone number already exist
+        const isExist = await this.whatsappModel.findOne({
+            $or: [
+                { email: data.email },
+                { phoneNumber: data.phoneNumber }
+            ]
+        }).lean();
+
+        return isExist;
+    }
+
     async sendOtp(userId: string) {
         const verifyToken = this.generateRandomToken(64)
         const expires_in = this.expiresIn(this.expires_in)
 
         const whatsapp = await this.whatsappModel.findOne({ userId: userId }).lean();
+        console.log(whatsapp)
         const verifyData: VerifyWhatsapp = {
             verify_code: this.generateVerificationCode(),
             verify_token: verifyToken,

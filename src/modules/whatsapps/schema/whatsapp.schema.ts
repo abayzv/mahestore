@@ -11,6 +11,9 @@ export class Whatsapp {
     userId: string;
 
     @Prop()
+    email: string;
+
+    @Prop()
     phoneNumber: string;
 
     @Prop()

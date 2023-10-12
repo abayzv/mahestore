@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 
 export interface IWhatsapp extends Document {
     userId: string,
+    email: string,
     phoneNumber: number,
     isActivated: boolean,
     verify_code: number,
@@ -11,6 +12,7 @@ export interface IWhatsapp extends Document {
 
 export interface CreateUserWhatsapp {
     userId: string,
+    email: string,
     phoneNumber: number,
 }
 

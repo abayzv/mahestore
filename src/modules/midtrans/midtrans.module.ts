@@ -14,8 +14,8 @@ const port = new ConfigService().get('MIDTRANS_SERVICE_PORT');
         name: 'MIDTRANS_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: host,
-          port: port,
+          host: "midtrans-services-api-1",
+          port: 5003,
         }
       }
     ]),

@@ -8,6 +8,7 @@ import { RegisterDto } from './dto/register.dto';
 import { WhatsappsService } from 'src/modules/whatsapps/whatsapps.service';
 import { IWhatsapp, VerifyWhatsapp } from 'src/modules/whatsapps/interface/whatsapp.interface';
 import { JwtService } from '@nestjs/jwt';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,12 +28,33 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async login(email: string, password: string) {
+    async login(login: AuthLoginDto) {
+        const { email, password, phoneNumber } = login
+
+        // Check if email or phone number is in request
+        if (!email && !phoneNumber) {
+            throw new ResponseError(400, 'Email or phone number is required')
+        }
+
+        // Check if email or phone number is exist
+        const isExist = await this.whatsappService.isExist({ email, phoneNumber })
+
+        // If not exist, throw error
+        if (!isExist) throw new ResponseError(400, 'Email or phone number not registered')
+
+        // If exist, get email
+        const { email: userEmail, isActivated } = isExist
+
+        // Login with email
         const url = this.baseUrl + '/auth/email/login';
-        const data = await this.useApi(url, 'POST', { email, password })
+        const data = await this.useApi(url, 'POST', { email: userEmail, password })
 
-        await this.whatsappService.revokeAccess(data.user.id)
+        // if login with phone number, revoke access
+        if (phoneNumber || !isActivated) {
+            await this.whatsappService.revokeAccess(data.user.id)
+        }
 
+        // return token
         return {
             accessToken: data.token,
             refreshToken: data.refreshToken,
@@ -52,16 +74,23 @@ export class AuthService {
     async register(registerDto: RegisterDto) {
         const url = this.baseUrl + '/auth/email/register';
         const loginUrl = this.baseUrl + '/auth/email/login';
+
+        const { email, password, phoneNumber } = registerDto
+
+        const isExist = await this.whatsappService.isExist({ email, phoneNumber })
+        if (isExist) throw new ResponseError(400, 'Email or phone number already registered')
+
         const data = await this.useApi(url, 'POST', registerDto)
 
         const loginData = await this.useApi(loginUrl, 'POST', {
-            email: registerDto.email,
-            password: registerDto.password
+            email: email,
+            password: password
         })
 
         const createWhatsapp = {
             userId: loginData.user.id,
-            phoneNumber: registerDto.phoneNumber,
+            email: email,
+            phoneNumber: phoneNumber,
         }
 
         await this.whatsappService.create(createWhatsapp)

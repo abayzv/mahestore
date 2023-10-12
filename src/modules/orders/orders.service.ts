@@ -83,7 +83,7 @@ PT MAHESA DIGITAL INDONESIA
 -----------------------------------
 *INVOICE*
 -----------------------------------
-*Customer Name:* ${req['user'].name}
+*Customer Name:* ${req['user'].user.firstName + ' ' + req['user'].user.lastName}
 *Order ID:* ${result.reference_number}
 *Order Date:* ${result.date.toLocaleDateString()}
 *Order Status:* ${result.status}  

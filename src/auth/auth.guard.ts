@@ -37,6 +37,17 @@ export class AuthGuard implements CanActivate {
         const payload = this.jwtService.decode(token)
         request['user'] = payload;
 
+        try {
+            const me = await this.authService.me(token);
+            request['user'].user = {
+                email: me.email,
+                firstName: me.firstName,
+                lastName: me.lastName,
+            }
+        } catch (err) {
+            throw new ResponseError(401, 'Unauthorized')
+        }
+
         if (payload['role'].id === 1) return true;
 
         const skipCheck = [
@@ -53,14 +64,6 @@ export class AuthGuard implements CanActivate {
             throw new ResponseError(401, 'Unauthorized');
         } else {
             request['user'].phoneNumber = whatsapp.phoneNumber;
-        }
-
-
-        try {
-            const me = await this.authService.me(token);
-            request['user'].user = me;
-        } catch (err) {
-            throw new ResponseError(401, 'Unauthorized')
         }
 
         return true;
