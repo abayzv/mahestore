@@ -29,8 +29,8 @@ export class OrdersController {
     groups: [ORDER_LIST]
   })
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@Req() req: Request) {
+    return this.ordersService.findAll(req);
   }
 
   @SerializeOptions({

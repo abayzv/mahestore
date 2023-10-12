@@ -113,8 +113,18 @@ ${orderList.map((item) => {
     return new OrderEntity(result);
   }
 
-  async findAll(): Promise<OrderEntity[]> {
-    const orders = await this.Order.find().lean().populate({ path: 'order_items' }).populate('address_id');
+  async findAll(req: Request): Promise<OrderEntity[]> {
+    const userId = req['user'].id;
+    const roleId = req['user'].role.id;
+
+    let orders = null;
+
+    if (roleId === 1) {
+      orders = await this.Order.find().lean().populate({ path: 'order_items' }).populate('address_id');
+    } else {
+      orders = await this.Order.find({ customer_id: userId }).lean().populate({ path: 'order_items' }).populate('address_id');
+    }
+
     const newOrders = orders.map(async (order) => {
       const orderData = new OrderEntity(order);
       const orderItems = await this.findOrderItems(new String(order._id).toString())
