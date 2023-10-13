@@ -174,4 +174,9 @@ ${orderList.map((item) => {
     await this.OrderItem.deleteMany({ _id: { $in: order.order_items } });
     return new OrderEntity(order);
   }
+
+  // notification webhooks
+  async notification(body: any) {
+    console.log(body)
+  }
 }

@@ -54,4 +54,10 @@ export class OrdersController {
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
   }
+
+  @Post('/notification')
+  async notification(@Body() body: any) {
+    await this.ordersService.notification(body);
+    return {}
+  }
 }
