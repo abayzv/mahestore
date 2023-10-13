@@ -9,9 +9,7 @@ import { Request } from 'express';
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptors';
 import { ORDER_SINGLE, ORDER_LIST } from './entities/order.entity';
 
-@ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor, FormatResponseInterceptor)
-@UseGuards(AuthGuard)
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
@@ -20,6 +18,8 @@ export class OrdersController {
   @SerializeOptions({
     groups: [ORDER_SINGLE]
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: Request) {
     return this.ordersService.create(createOrderDto, req);
@@ -28,6 +28,8 @@ export class OrdersController {
   @SerializeOptions({
     groups: [ORDER_LIST]
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   findAll(@Req() req: Request) {
     return this.ordersService.findAll(req);
@@ -36,11 +38,15 @@ export class OrdersController {
   @SerializeOptions({
     groups: [ORDER_SINGLE]
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('/order-items/:id')
   async findAllOrderItems(@Param('id') id: string) {
     const data = await this.ordersService.findOrderItems(id);
@@ -50,12 +56,13 @@ export class OrdersController {
   @SerializeOptions({
     groups: [ORDER_LIST]
   })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
   }
 
-  @UseGuards(() => true)
   @Post('/notification')
   async notification(@Body() body: any) {
     await this.ordersService.notification(body);
