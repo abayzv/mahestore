@@ -55,6 +55,7 @@ export class OrdersController {
     return this.ordersService.remove(id);
   }
 
+  @UseGuards(() => true)
   @Post('/notification')
   async notification(@Body() body: any) {
     await this.ordersService.notification(body);
