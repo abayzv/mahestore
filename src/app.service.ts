@@ -92,7 +92,7 @@ export class AppService {
         //     status.whatsapp_services = "down";
         // }
 
-        const res = await this.useApi("http://localhost:2375/containers/json", "GET", null)
+        const res = await this.useApi("http://34.87.102.8:2375/containers/json", "GET", null)
         const serviceList = ["abayzv/auth-service-api", "abayzv/wa-services-api:latest", "midtrans-services-api", "mongo:latest", "scraper-local-development", "redis/redis-stack:latest", "abayzv/postgres"]
         // return item only in serviceList
         const services = res.filter((item: any) => serviceList.includes(item.Image))
