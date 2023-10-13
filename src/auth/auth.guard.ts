@@ -21,7 +21,9 @@ export class AuthGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>();
         const token = this.extractTokenFromHeader(request);
+        console.log(token)
         if (!token) {
+            console.log('token tidak ada')
             throw new UnauthorizedException('Unauthorized');
         }
 
@@ -31,6 +33,7 @@ export class AuthGuard implements CanActivate {
         try {
             this.jwtService.verify(token);
         } catch (error) {
+            console.log("token tidak valid")
             throw new UnauthorizedException('Unauthorized');
         }
 
@@ -45,6 +48,7 @@ export class AuthGuard implements CanActivate {
                 lastName: me.lastName,
             }
         } catch (err) {
+            console.log("user tidak ditemukan")
             throw new ResponseError(401, 'Unauthorized')
         }
 
@@ -61,6 +65,7 @@ export class AuthGuard implements CanActivate {
 
         const whatsapp = await this.whatsappService.isActive(payload['id']);
         if (!whatsapp.isActive) {
+            console.log("whatsapp tidak aktif")
             throw new ResponseError(401, 'Unauthorized');
         } else {
             request['user'].phoneNumber = whatsapp.phoneNumber;
