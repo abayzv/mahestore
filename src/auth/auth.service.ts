@@ -163,6 +163,17 @@ export class AuthService {
         return data
     }
 
+    async ping() {
+        const baseUrl: string = `${this.url}:${this.port}`
+
+        try {
+            await this.useApi(baseUrl, 'GET', {})
+            return "up"
+        } catch (error) {
+            return "down"
+        }
+    }
+
     private async useApi(url: string, method: string, data: any) {
         const { data: response } = await firstValueFrom(
             this.httpService.request({

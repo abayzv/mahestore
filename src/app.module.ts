@@ -12,6 +12,9 @@ import { CartsModule } from './modules/carts/carts.module';
 import { OfficialStoresModule } from './modules/official-stores/official-stores.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     ProductsModule,
@@ -25,9 +28,12 @@ import { join } from 'path';
     MediasModule,
     CartsModule,
     OfficialStoresModule,
+    HttpModule
     // ServeStaticModule.forRoot({
     //   rootPath: join(__dirname, '..', 'static'),
     // }),
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule { }

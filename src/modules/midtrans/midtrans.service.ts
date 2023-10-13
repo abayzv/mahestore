@@ -36,4 +36,17 @@ export class MidtransService {
   findOne(id: string) {
     return this.client.send('get_status_transaction', id);
   }
+
+  async ping() {
+    try {
+      const result = await firstValueFrom(this.client.send('hello', { id: 1 }).pipe(catchError((error) => {
+        throw error
+      }
+      )));
+
+      return "up"
+    } catch (error) {
+      return "down"
+    }
+  }
 }

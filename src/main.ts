@@ -24,14 +24,14 @@ async function bootstrap() {
 
 
   // Media Service
-  app.use('/media-service', createProxyMiddleware({
-    target: process.env.AUTH_SERVICE_URL + ':' + process.env.AUTH_SERVICE_PORT,
-    changeOrigin: true,
-    // rewrite target /api/v1/files to /media-service
-    pathRewrite: {
-      '^/media-service/assets': '/api/v1/files',
-    },
-  }));
+  // app.use('/media-service', createProxyMiddleware({
+  //   target: process.env.AUTH_SERVICE_URL + ':' + process.env.AUTH_SERVICE_PORT,
+  //   changeOrigin: true,
+  //   // rewrite target /api/v1/files to /media-service
+  //   pathRewrite: {
+  //     '^/media-service/assets': '/api/v1/files',
+  //   },
+  // }));
 
   // Whatsapp Service
   app.use('/whatsapp-service', createProxyMiddleware({
